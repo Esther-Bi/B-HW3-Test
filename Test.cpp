@@ -24,9 +24,12 @@ TEST_CASE("Good input") {
 		for (int j=1 ; j<5 ; j++){
 			zich::Matrix a{build_random_vec(i,j) ,i ,j};
 			zich::Matrix b{build_random_vec(i,j) ,i ,j};
+			if (i==j){
+				CHECK_NOTHROW(a*b);
+				CHECK_NOTHROW(a*=b);
+			}
 			CHECK_NOTHROW(a+b);
 			CHECK_NOTHROW(a-b);
-			CHECK_NOTHROW(a*b);
 			CHECK_NOTHROW(a*3);
 			CHECK_NOTHROW(3*a);
 			CHECK_NOTHROW(++a);
@@ -34,7 +37,6 @@ TEST_CASE("Good input") {
 			CHECK_NOTHROW(--a);
 			CHECK_NOTHROW(a--);
 			CHECK_NOTHROW(a*=3);
-			CHECK_NOTHROW(a*=b);
 			CHECK_NOTHROW(a+=b);
 			CHECK_NOTHROW(a-=b);
 			CHECK_NOTHROW(bool ans=a==b);
@@ -123,8 +125,8 @@ TEST_CASE("Actual good outputs comparison operators") {
 	zich::Matrix b{arr, 3, 3};
 	zich::Matrix c{arr, 3, 3};
 	zich::Matrix d{identity, 3, 3};
-	CHECK(a*b == c);
-	CHECK(a*b != c);
+	CHECK_EQ((a*b) == c, true);
+	CHECK_EQ((a*b) != d, true);
 	CHECK(a <= b);
 	CHECK_FALSE(a >= b);
 	CHECK(a<b);
@@ -147,12 +149,12 @@ TEST_CASE("Actual good outputs + -") {
 	zich::Matrix c{arr4, 3, 3};
 	zich::Matrix d{arr4M, 3, 3};
 	zich::Matrix e{arr0, 3, 3};
-	CHECK(a+b == c);
-	CHECK(c-a == b);
+	CHECK_EQ((a+b) == c, true);
+	CHECK_EQ((c+a) == b, true);
 	CHECK_EQ((a+=b) == c, true);
 	CHECK_EQ((c-=b) == a, true);
-	CHECK(d+e == d);
-	CHECK(d-e == d);
+	CHECK_EQ((d+e) == d, true);
+	CHECK_EQ((d-e) == d, true);
 	CHECK_EQ((d+=c) == e, true);
 }
 
@@ -166,9 +168,9 @@ TEST_CASE("Actual good outputs *") {
 	zich::Matrix b{arr, 3, 3};
 	zich::Matrix c{arr15, 3, 3};
 	zich::Matrix d{arr7, 3, 3};
-	CHECK(a*7 == d);
-	CHECK(7*a == d);
-	CHECK(a*b == b);
+	CHECK_EQ((a*7) == d, true);
+	CHECK_EQ((7*a) == d, true);
+	CHECK_EQ((a*b) == b, true);
 	CHECK_EQ((a*=b) == b, true);
 	CHECK_EQ((b*=5) == c, true);
 }
@@ -182,6 +184,6 @@ TEST_CASE("Actual good outputs Unary") {
 	zich::Matrix a{arrP, 2, 4};
 	zich::Matrix b{arrP, 2, 4};
 	zich::Matrix c{arrM, 2, 4};
-	CHECK(+a == b);
-	CHECK(-a == c);
+	CHECK_EQ((+a) == b, true);
+	CHECK_EQ((-a) == c, true);
 }
